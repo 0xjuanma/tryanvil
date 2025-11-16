@@ -442,7 +442,7 @@
                 <h2>Get Started</h2>
                 <p>Download the latest version of Anvil for macOS. Installation is simple and takes just a few minutes.</p>
                 <div class="download-buttons">
-                    <a href="https://github.com/rocajuanma/anvil-app/releases/latest" class="download-button" target="_blank" rel="noopener noreferrer">
+                    <a href="#" id="download-dmg" class="download-button" target="_blank" rel="noopener noreferrer">
                         Download for macOS
                     </a>
                     <a href="https://github.com/rocajuanma/anvil" class="download-button secondary" target="_blank" rel="noopener noreferrer">
@@ -514,6 +514,36 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Fetch the latest release and update download button to point to DMG
+        async function updateDownloadButton() {
+            try {
+                const response = await fetch('https://api.github.com/repos/rocajuanma/anvil-app/releases/latest');
+                const release = await response.json();
+                
+                // Find the DMG asset
+                const dmgAsset = release.assets.find(asset => asset.name.endsWith('.dmg'));
+                
+                if (dmgAsset) {
+                    const downloadButton = document.getElementById('download-dmg');
+                    downloadButton.href = dmgAsset.browser_download_url;
+                } else {
+                    // Fallback to releases page if no DMG found
+                    const downloadButton = document.getElementById('download-dmg');
+                    downloadButton.href = 'https://github.com/rocajuanma/anvil-app/releases/latest';
+                }
+            } catch (error) {
+                console.error('Error fetching latest release:', error);
+                // Fallback to releases page on error
+                const downloadButton = document.getElementById('download-dmg');
+                downloadButton.href = 'https://github.com/rocajuanma/anvil-app/releases/latest';
+            }
+        }
+
+        // Update download button when page loads
+        updateDownloadButton();
+    </script>
 </body>
 </html>
 
