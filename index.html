@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anvil - A minimalist app to install and manage tools in batches using Homebrew">
+    <title>Anvil - Streamline Your Developer Tool Setup</title>
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/rocajuanma/anvil/master/assets/anvil-2.0.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/rocajuanma/anvil/master/assets/anvil-2.0.png">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tryanvil.app/">
+    <meta property="og:title" content="Anvil - Streamline Your Developer Tool Setup">
+    <meta property="og:description" content="A beautiful GUI to install and manage developer tools in batches using Homebrew">
+    <meta property="og:image" content="https://raw.githubusercontent.com/rocajuanma/anvil/master/assets/anvil-2.0.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tryanvil.app/">
+    <meta property="twitter:title" content="Anvil - Streamline Your Developer Tool Setup">
+    <meta property="twitter:description" content="A beautiful GUI to install and manage developer tools in batches using Homebrew">
+    <meta property="twitter:image" content="https://raw.githubusercontent.com/rocajuanma/anvil/master/assets/anvil-2.0.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #00b8e6;
+            --secondary: #7c3aed;
+            --text: #ffffff;
+            --text-light: #b0b0b0;
+            --bg: #000000;
+            --bg-light: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --border: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .logo:hover {
+            color: var(--primary);
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .download-button.secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .download-button.secondary:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 3rem 0 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: var(--text);
+            margin-bottom: 0;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--bg);
+            padding: 1rem 2.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 212, 255, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 212, 255, 0.5);
+            background: var(--primary-dark);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            margin-left: 1rem;
+        }
+
+        .cta-button.secondary:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 0;
+            background: var(--bg-light);
+            margin-top: 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--text);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* Download Section */
+        .download {
+            padding: 1rem 0;
+            text-align: center;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 73px;
+            z-index: 98;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.95);
+        }
+
+        .download-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .download h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .download p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .download-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .download-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--bg);
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 212, 255, 0.3);
+        }
+
+        .download-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Info Section */
+        .info {
+            padding: 4rem 0;
+            background: var(--bg-light);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .info-card:hover {
+            border-color: var(--primary);
+        }
+
+        .info-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .info-card p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .info-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .info-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-light);
+            color: var(--text);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s, color 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        footer p a {
+            color: var(--text);
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s, color 0.2s;
+        }
+
+        footer p a:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .logo img {
+                height: 28px;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .cta-button.secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+                display: block;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">
+                <img src="https://raw.githubusercontent.com/rocajuanma/anvil/master/assets/anvil-2.0.png" alt="Anvil Logo">
+                <span>Anvil</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#download">Download</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Anvil</h1>
+            <p>A minimalist app to install and manage tools in batches using Homebrew. Streamline your developer tool setup with an intuitive interface.</p>
+        </div>
+    </section>
+
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-content">
+                <h2>Get Started</h2>
+                <p>Download the latest version of Anvil for macOS. Installation is simple and takes just a few minutes.</p>
+                <div class="download-buttons">
+                    <a href="https://github.com/rocajuanma/anvil-app/releases/latest" class="download-button" target="_blank" rel="noopener noreferrer">
+                        Download for macOS
+                    </a>
+                    <a href="https://github.com/rocajuanma/anvil" class="download-button secondary" target="_blank" rel="noopener noreferrer">
+                        Try Anvil CLI
+                    </a>
+                </div>
+                <p style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-light);">
+                    Requires macOS 11.0 (Big Sur) or later
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">•</div>
+                    <h3>Create Tool Groups</h3>
+                    <p>Create groups of tools to install and manage them in batches. Easily add and remove tools from groups to ensure you have the tools you need when you need them.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">•</div>
+                    <h3>One-Click Install</h3>
+                    <p>Install entire tool groups with a single click. No need to install tools one by one.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">•</div>
+                    <h3>Export/Import Tool Groups</h3>
+                    <p>Save and share your tool groups with export/import functionality. Easily import tool groups from other users or share your own tool groups with the community.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="info" id="about">
+        <div class="container">
+            <h2 class="section-title">Learn More</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>macOS App</h3>
+                    <p>The GUI application provides a beautiful interface for managing your developer tools. Perfect for users who prefer visual interfaces.</p>
+                    <a href="https://github.com/rocajuanma/anvil-app/releases" target="_blank" rel="noopener noreferrer">View Releases →</a>
+                </div>
+                <div class="info-card">
+                    <h3>CLI Tool</h3>
+                    <p>Prefer the command line? The Anvil CLI offers more advanced functionality with a terminal interface. Open source and available on GitHub.</p>
+                    <a href="https://github.com/rocajuanma/anvil" target="_blank" rel="noopener noreferrer">View CLI Repo →</a>
+                </div>
+                <div class="info-card">
+                    <h3>Issues & Feedback</h3>
+                    <p>Found a bug or have a feature request? We'd love to hear from you. Open an issue on GitHub.</p>
+                    <a href="https://github.com/rocajuanma/anvil-app/issues" target="_blank" rel="noopener noreferrer">Report Issue →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 <a href="https://github.com/rocajuanma" target="_blank" rel="noopener noreferrer">Juanma Roca</a>. All rights reserved.</p>
+                <ul class="footer-links">
+                    <li><a href="https://github.com/rocajuanma/anvil-app/releases">Releases</a></li>
+                    <li><a href="https://github.com/rocajuanma/anvil">CLI Tool</a></li>
+                    <li><a href="https://github.com/rocajuanma/anvil-app/issues">Issues</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
