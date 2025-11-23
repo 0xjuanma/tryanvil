@@ -34,6 +34,7 @@
             --primary: #00d4ff;
             --primary-dark: #00b8e6;
             --secondary: #7c3aed;
+            --accent: #ff6b35;
             --text: #ffffff;
             --text-light: #b0b0b0;
             --bg: #000000;
@@ -279,12 +280,29 @@
             font-size: 0.9rem;
             transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 6px rgba(0, 212, 255, 0.3);
+            position: relative;
         }
 
         .download-button:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 212, 255, 0.5);
+        }
+
+        .beta-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: var(--accent);
+            color: var(--text);
+            font-size: 0.56rem;
+            font-weight: 700;
+            padding: 0.17rem 0.43rem;
+            border-radius: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 4px rgba(255, 107, 53, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* Info Section */
@@ -444,6 +462,7 @@
                 <div class="download-buttons">
                     <a href="#" id="download-dmg" class="download-button" target="_blank" rel="noopener noreferrer">
                         Download for macOS
+                        <span class="beta-badge">Beta</span>
                     </a>
                     <a href="https://github.com/0xjuanma/anvil" class="download-button secondary" target="_blank" rel="noopener noreferrer">
                         Try Anvil CLI
